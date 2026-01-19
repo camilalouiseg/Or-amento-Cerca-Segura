@@ -1,0 +1,5 @@
+{
+  "name": "Cerca Segura Orçamentos",
+  "description": "Gerador de orçamentos em PDF para serviços de segurança eletrônica (Cerca Elétrica, CFTV, Alarme e Concertina).",
+  "requestFramePermissions": []
+}
