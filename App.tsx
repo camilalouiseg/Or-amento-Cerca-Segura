@@ -80,7 +80,7 @@ const App: React.FC = () => {
       ) : (
         <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
           {/* Editor Panel (Left/Top) */}
-          <div className="w-full lg:w-5/12 h-1/2 lg:h-full p-4 lg:p-6 z-10 bg-slate-50 lg:border-r border-slate-200">
+          <div className="w-full lg:w-5/12 h-[55%] lg:h-full p-4 lg:p-6 z-10 bg-slate-50 lg:border-r border-slate-200">
             <QuoteEditor
               items={items}
               setItems={setItems}
@@ -96,16 +96,22 @@ const App: React.FC = () => {
           </div>
 
           {/* Preview Panel (Right/Bottom) */}
-          <div className="w-full lg:w-7/12 h-1/2 lg:h-full bg-slate-200/50 overflow-auto relative">
-             <div className="absolute inset-0 flex justify-center p-4 lg:p-12 min-h-max">
-               <QuotePreview
-                 ref={previewRef}
-                 serviceTitle={serviceTitle}
-                 items={items}
-                 customerName={customerName}
-                 footerNotes={footerNotes}
-                 showTotal={showTotal}
-               />
+          <div className="w-full lg:w-7/12 h-[45%] lg:h-full bg-slate-200/50 relative overflow-hidden flex items-center justify-center">
+             {/* 
+                Mobile: Scaled down heavily to fit viewport without scroll 
+                Desktop: Scrollable or centered normal scale 
+             */}
+             <div className="lg:w-full lg:h-full lg:overflow-auto lg:p-12 lg:flex lg:justify-center">
+                <div className="transform scale-[0.35] sm:scale-[0.5] md:scale-[0.65] lg:scale-100 lg:transform-none origin-center lg:origin-top transition-all duration-300">
+                  <QuotePreview
+                    ref={previewRef}
+                    serviceTitle={serviceTitle}
+                    items={items}
+                    customerName={customerName}
+                    footerNotes={footerNotes}
+                    showTotal={showTotal}
+                  />
+                </div>
              </div>
           </div>
         </div>
