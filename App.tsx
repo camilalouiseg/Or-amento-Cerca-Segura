@@ -16,7 +16,11 @@ const App: React.FC = () => {
   const [showTotal, setShowTotal] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Ref para o preview visível (para o usuário ver)
   const previewRef = useRef<HTMLDivElement>(null);
+  
+  // Ref para a versão de impressão (invisível, mas perfeita para o PDF)
+  const printRef = useRef<HTMLDivElement>(null);
 
   const handleSelectService = (type: ServiceType) => {
     const template = SERVICE_TEMPLATES[type];
@@ -37,21 +41,26 @@ const App: React.FC = () => {
   };
 
   const handleDownloadPDF = async () => {
-    if (!previewRef.current) return;
+    // Usamos o printRef (versão oculta full size) ao invés do previewRef (versão mobile escalada)
+    if (!printRef.current) return;
 
     setIsDownloading(true);
     try {
-      const element = previewRef.current;
+      const element = printRef.current;
       
       // High quality capture
+      // On mobile, capture strictly the hidden element which has correct dimensions
       const canvas = await html2canvas(element, {
-        scale: 2, // Improves resolution
+        scale: 2, // Improves resolution (2x standard DPI)
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        // Force width/height to prevent mobile browser glitches
+        width: 794, // approx 210mm in pixels at 96 DPI
+        windowWidth: 1200 // Simulate desktop window width for font rendering
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
       // A4 dimensions in mm
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -95,12 +104,8 @@ const App: React.FC = () => {
             />
           </div>
 
-          {/* Preview Panel (Right/Bottom) */}
+          {/* Preview Panel (Right/Bottom) - VISUAL ONLY */}
           <div className="w-full lg:w-7/12 h-[45%] lg:h-full bg-slate-200/50 relative overflow-hidden flex items-center justify-center">
-             {/* 
-                Mobile: Scaled down heavily to fit viewport without scroll 
-                Desktop: Scrollable or centered normal scale 
-             */}
              <div className="lg:w-full lg:h-full lg:overflow-auto lg:p-12 lg:flex lg:justify-center">
                 <div className="transform scale-[0.35] sm:scale-[0.5] md:scale-[0.65] lg:scale-100 lg:transform-none origin-center lg:origin-top transition-all duration-300">
                   <QuotePreview
@@ -113,6 +118,22 @@ const App: React.FC = () => {
                   />
                 </div>
              </div>
+          </div>
+
+          {/* 
+            HIDDEN PRINT CONTAINER 
+            This is positioned off-screen but rendered at full A4 size without CSS scaling.
+            This ensures the PDF is generated correctly even on small mobile screens.
+          */}
+          <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+             <QuotePreview
+                ref={printRef}
+                serviceTitle={serviceTitle}
+                items={items}
+                customerName={customerName}
+                footerNotes={footerNotes}
+                showTotal={showTotal}
+              />
           </div>
         </div>
       )}
