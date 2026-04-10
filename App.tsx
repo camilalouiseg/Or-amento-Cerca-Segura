@@ -51,7 +51,7 @@ const App: React.FC = () => {
       // High quality capture
       // On mobile, capture strictly the hidden element which has correct dimensions
       const canvas = await html2canvas(element, {
-        scale: 2, // Improves resolution (2x standard DPI)
+        scale: 4, // Improves resolution (4x standard DPI for crisp text)
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
@@ -60,19 +60,19 @@ const App: React.FC = () => {
         windowWidth: 1200 // Simulate desktop window width for font rendering
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const imgData = canvas.toDataURL('image/png');
       
       // A4 dimensions in mm
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       
       // Clean filename
-      const safeTitle = serviceTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-      pdf.save(`orcamento_${safeTitle}_${dateStr}.pdf`);
+      const safeTitle = serviceTitle.trim().replace(/[^a-zA-Z0-9À-ÿ]/g, '_');
+      const safeCustomer = customerName.trim() ? customerName.trim().replace(/[^a-zA-Z0-9À-ÿ]/g, '_') : 'Cliente';
+      pdf.save(`${safeTitle}_${safeCustomer}.pdf`);
 
     } catch (error) {
       console.error('Error generating PDF:', error);

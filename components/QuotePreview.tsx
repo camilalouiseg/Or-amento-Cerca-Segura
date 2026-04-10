@@ -38,7 +38,7 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ serviceTit
             className="h-full w-auto object-contain max-w-[280px]"
           />
         </div>
-        <h2 className="text-4xl font-bold tracking-wide uppercase">Orçamento</h2>
+        <h2 className="text-4xl font-bold tracking-wide uppercase leading-none">Orçamento</h2>
       </div>
 
       {/* Content */}
@@ -52,35 +52,44 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ serviceTit
 
         {/* Table */}
         <div className="w-full mb-8">
-          <div className="bg-[#2d3342] text-white font-bold text-sm uppercase py-3 px-4 grid grid-cols-12 gap-2">
-            <div className="col-span-7">Produto</div>
-            <div className="col-span-2 text-right">Preço</div>
-            <div className="col-span-1 text-center">QT</div>
-            <div className="col-span-2 text-right">Total</div>
-          </div>
-
-          {items.map((item, index) => (
-            <div 
-              key={item.id} 
-              className={`grid grid-cols-12 gap-2 py-3 px-4 text-sm items-center border-b border-gray-100 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
-            >
-              <div className="col-span-7 font-medium text-slate-700">{item.name}</div>
-              <div className="col-span-2 text-right text-slate-600">{formatCurrency(item.price)}</div>
-              <div className="col-span-1 text-center text-slate-600">
-                {item.quantity} {item.unit ? item.unit : ''}
-              </div>
-              <div className="col-span-2 text-right font-semibold text-slate-800">
-                {formatCurrency(item.price * item.quantity)}
-              </div>
-            </div>
-          ))}
+          <table className="w-full text-sm text-left border-collapse">
+            <thead className="bg-[#2d3342] text-white font-bold uppercase">
+              <tr>
+                <th className="w-5/6 p-0">
+                  <div className="flex items-center px-4 min-h-[44px] leading-none">Produto</div>
+                </th>
+                <th className="w-1/6 p-0">
+                  <div className="flex items-center justify-center px-4 min-h-[44px] leading-none">QT</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, index) => (
+                <tr 
+                  key={item.id} 
+                  className={`border-b border-gray-100 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+                >
+                  <td className="p-0 font-medium text-slate-700">
+                    <div className="flex items-center px-4 min-h-[48px] leading-none">
+                      {item.name}
+                    </div>
+                  </td>
+                  <td className="p-0 font-medium text-slate-700">
+                    <div className="flex items-center justify-center px-4 min-h-[48px] leading-none">
+                      {item.quantity} {item.unit ? item.unit : ''}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {/* Total Bar */}
         {showTotal && (
-          <div className="bg-[#3e4552] text-white py-3 px-8 flex justify-between items-center rounded-sm">
-              <span className="text-lg font-medium">Valor Total</span>
-              <span className="text-2xl font-bold">{formatCurrency(total)}</span>
+          <div className="bg-[#3e4552] text-white h-14 px-8 flex justify-between items-center rounded-sm">
+              <span className="text-lg font-medium leading-none">Valor Total</span>
+              <span className="text-2xl font-bold leading-none">{formatCurrency(total)}</span>
           </div>
         )}
 
