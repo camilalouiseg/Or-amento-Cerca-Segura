@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [customerName, setCustomerName] = useState('');
   const [footerNotes, setFooterNotes] = useState<string[]>([]);
   const [showTotal, setShowTotal] = useState(true);
+  const [showIndividualTotal, setShowIndividualTotal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Ref para o preview visível (para o usuário ver)
@@ -30,6 +31,7 @@ const App: React.FC = () => {
     setFooterNotes(template.footerNotes);
     // If showTotal is undefined in template, default to true
     setShowTotal(template.showTotal !== false);
+    setShowIndividualTotal(template.showIndividualTotal || false);
   };
 
   const handleBack = () => {
@@ -115,6 +117,7 @@ const App: React.FC = () => {
                     customerName={customerName}
                     footerNotes={footerNotes}
                     showTotal={showTotal}
+                    showIndividualTotal={showIndividualTotal}
                   />
                 </div>
              </div>
@@ -133,6 +136,7 @@ const App: React.FC = () => {
                 customerName={customerName}
                 footerNotes={footerNotes}
                 showTotal={showTotal}
+                showIndividualTotal={showIndividualTotal}
               />
           </div>
         </div>

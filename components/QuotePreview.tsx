@@ -8,13 +8,21 @@ interface QuotePreviewProps {
   customerName?: string;
   footerNotes: string[];
   showTotal?: boolean;
+  showIndividualTotal?: boolean;
 }
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
-const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ serviceTitle, items, customerName, footerNotes, showTotal = true }, ref) => {
+const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ 
+  serviceTitle, 
+  items, 
+  customerName, 
+  footerNotes, 
+  showTotal = true,
+  showIndividualTotal = false
+}, ref) => {
   const total = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
   return (
@@ -55,12 +63,17 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ serviceTit
           <table className="w-full text-sm text-left border-collapse">
             <thead className="bg-[#2d3342] text-white font-bold uppercase">
               <tr>
-                <th className="w-5/6 p-0">
+                <th className={`${showIndividualTotal ? 'w-4/6' : 'w-5/6'} p-0`}>
                   <div className="flex items-center px-4 min-h-[44px] leading-none">Produto</div>
                 </th>
                 <th className="w-1/6 p-0">
                   <div className="flex items-center justify-center px-4 min-h-[44px] leading-none">QT</div>
                 </th>
+                {showIndividualTotal && (
+                  <th className="w-1/6 p-0">
+                    <div className="flex items-center justify-center px-4 min-h-[44px] leading-none">TOTAL</div>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -79,6 +92,13 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({ serviceTit
                       {item.quantity} {item.unit ? item.unit : ''}
                     </div>
                   </td>
+                  {showIndividualTotal && (
+                    <td className="p-0 font-medium text-slate-700">
+                      <div className="flex items-center justify-center px-4 min-h-[48px] leading-none">
+                        {formatCurrency(item.price * item.quantity)}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

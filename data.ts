@@ -75,6 +75,7 @@ export const SERVICE_TEMPLATES: Record<ServiceType, ServiceTemplate> = {
     id: ServiceType.CONCERTINA,
     title: 'Concertina',
     showTotal: false,
+    showIndividualTotal: true,
     items: [
       { id: generateId(), name: 'CONCERTINA (À VISTA)', price: 30.00, quantity: 39.6, unit: 'm' },
       { id: generateId(), name: 'CONCERTINA (NO CARTÃO)', price: 34.00, quantity: 0, unit: 'm' },

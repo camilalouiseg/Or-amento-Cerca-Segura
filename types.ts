@@ -12,6 +12,7 @@ export interface ServiceTemplate {
   items: QuoteItem[];
   footerNotes: string[];
   showTotal?: boolean;
+  showIndividualTotal?: boolean;
 }
 
 export enum ServiceType {
