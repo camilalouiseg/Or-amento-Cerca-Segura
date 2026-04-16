@@ -170,6 +170,7 @@ const QuoteEditor: React.FC<QuoteEditorProps> = ({
                       onChange={(e) => handleItemChange(item.id, 'quantity', parseFloat(e.target.value) || 0)}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:border-yellow-400 outline-none text-center text-slate-700"
                       placeholder="1"
+                      step="0.01"
                     />
                   </div>
                   <button
