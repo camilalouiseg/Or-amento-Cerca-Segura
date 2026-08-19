@@ -41,7 +41,7 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({
           {/* Logo da Empresa */}
           {/* A imagem deve estar na pasta pública (public/) ou na raiz do servidor de hospedagem com o nome exato "logo.png" */}
           <img 
-            src="logo.png" 
+            src="/logo.png" 
             alt="Logo Cerca Segura" 
             className="h-full w-auto object-contain max-w-[280px]"
           />
