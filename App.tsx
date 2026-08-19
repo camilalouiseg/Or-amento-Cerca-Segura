@@ -51,25 +51,23 @@ const App: React.FC = () => {
       const element = printRef.current;
       
       // High quality capture
-      // On mobile, capture strictly the hidden element which has correct dimensions
       const canvas = await html2canvas(element, {
-        scale: 4, // Improves resolution (4x standard DPI for crisp text)
+        scale: 3, // 3x standard DPI for crisp text (balanced between quality and file size)
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
-        // Force width/height to prevent mobile browser glitches
-        width: 794, // approx 210mm in pixels at 96 DPI
-        windowWidth: 1200 // Simulate desktop window width for font rendering
+        windowWidth: 794,
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
       // A4 dimensions in mm
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      // Calculate height dynamically based on the exact canvas aspect ratio
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       
       // Clean filename
       const safeTitle = serviceTitle.trim().replace(/[^a-zA-Z0-9À-ÿ]/g, '_');
@@ -122,23 +120,29 @@ const App: React.FC = () => {
                 </div>
              </div>
           </div>
+        </div>
+      )}
 
-          {/* 
-            HIDDEN PRINT CONTAINER 
-            This is positioned off-screen but rendered at full A4 size without CSS scaling.
-            This ensures the PDF is generated correctly even on small mobile screens.
-          */}
-          <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-             <QuotePreview
-                ref={printRef}
-                serviceTitle={serviceTitle}
-                items={items}
-                customerName={customerName}
-                footerNotes={footerNotes}
-                showTotal={showTotal}
-                showIndividualTotal={showIndividualTotal}
-              />
-          </div>
+      {/* 
+        HIDDEN PRINT CONTAINER 
+        Rendered completely OUTSIDE the main layout to prevent viewport clipping,
+        flex squashing, or overflow-hidden truncation on mobile devices.
+      */}
+      {selectedService && (
+        <div 
+          className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none bg-white" 
+          aria-hidden="true"
+          style={{ width: '794px' }}
+        >
+           <QuotePreview
+              ref={printRef}
+              serviceTitle={serviceTitle}
+              items={items}
+              customerName={customerName}
+              footerNotes={footerNotes}
+              showTotal={showTotal}
+              showIndividualTotal={showIndividualTotal}
+            />
         </div>
       )}
     </div>

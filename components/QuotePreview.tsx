@@ -32,8 +32,8 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({
     */
     <div 
       ref={ref} 
-      className="bg-white shadow-2xl flex flex-col min-h-[29.7cm] w-[21cm] shrink-0 mx-auto"
-      style={{ width: '210mm', minHeight: '297mm' }} 
+      className="bg-white shadow-2xl flex flex-col shrink-0 mx-auto"
+      style={{ width: '794px', minHeight: '1123px' }} 
     >
       {/* Header */}
       <div className="bg-[#1a1f2c] text-white px-8 py-4 flex justify-between items-center h-40">
@@ -58,51 +58,44 @@ const QuotePreview = forwardRef<HTMLDivElement, QuotePreviewProps>(({
             {customerName && <p className="text-slate-500 mt-2">Cliente: {customerName}</p>}
         </div>
 
-        {/* Table */}
-        <div className="w-full mb-8">
-          <table className="w-full text-sm text-left border-collapse">
-            <thead className="bg-[#2d3342] text-white font-bold uppercase">
-              <tr>
-                <th className={`${showIndividualTotal ? 'w-4/6' : 'w-5/6'} p-0`}>
-                  <div className="flex items-center px-4 min-h-[44px] leading-none">Produto</div>
-                </th>
-                <th className="w-1/6 p-0">
-                  <div className="flex items-center justify-center px-4 min-h-[44px] leading-none">QT</div>
-                </th>
+        {/* Table replacement with flex grid to ensure 100% stability with html2canvas */}
+        <div className="w-full mb-8 flex flex-col">
+          {/* Header */}
+          <div className="flex flex-nowrap w-full bg-[#2d3342] text-white font-bold uppercase text-sm rounded-t-sm">
+            <div className={`${showIndividualTotal ? 'w-3/5' : 'w-4/5'} px-4 py-3 flex items-center`}>
+              Produto
+            </div>
+            <div className="w-1/5 px-4 py-3 flex items-center justify-center text-center">
+              QT
+            </div>
+            {showIndividualTotal && (
+              <div className="w-1/5 px-4 py-3 flex items-center justify-center text-center">
+                TOTAL
+              </div>
+            )}
+          </div>
+          
+          {/* Body */}
+          <div className="flex flex-col w-full text-sm">
+            {items.map((item, index) => (
+              <div 
+                key={item.id} 
+                className={`flex flex-nowrap w-full border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+              >
+                <div className={`${showIndividualTotal ? 'w-3/5' : 'w-4/5'} px-4 py-3 font-medium text-slate-700 flex items-center`}>
+                  {item.name}
+                </div>
+                <div className="w-1/5 px-4 py-3 font-medium text-slate-700 flex items-center justify-center text-center">
+                  {item.quantity} {item.unit ? item.unit : ''}
+                </div>
                 {showIndividualTotal && (
-                  <th className="w-1/6 p-0">
-                    <div className="flex items-center justify-center px-4 min-h-[44px] leading-none">TOTAL</div>
-                  </th>
+                  <div className="w-1/5 px-4 py-3 font-medium text-slate-700 flex items-center justify-center text-center">
+                    {formatCurrency(item.price * item.quantity)}
+                  </div>
                 )}
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, index) => (
-                <tr 
-                  key={item.id} 
-                  className={`border-b border-gray-100 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
-                >
-                  <td className="p-0 font-medium text-slate-700">
-                    <div className="flex items-center px-4 min-h-[48px] leading-none">
-                      {item.name}
-                    </div>
-                  </td>
-                  <td className="p-0 font-medium text-slate-700">
-                    <div className="flex items-center justify-center px-4 min-h-[48px] leading-none">
-                      {item.quantity} {item.unit ? item.unit : ''}
-                    </div>
-                  </td>
-                  {showIndividualTotal && (
-                    <td className="p-0 font-medium text-slate-700">
-                      <div className="flex items-center justify-center px-4 min-h-[48px] leading-none">
-                        {formatCurrency(item.price * item.quantity)}
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Total Bar */}
